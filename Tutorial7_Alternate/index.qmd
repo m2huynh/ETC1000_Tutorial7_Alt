@@ -1,0 +1,371 @@
+---
+title: "Tutorial7_Alternate"
+subtitle: "ETC1000"
+---
+
+{{< include _extensions/r-wasm/live/_knitr.qmd >}}
+
+## About
+
+For those of you who have yet to install R and RStudio, you can still complete the exercises using the document here. Note: this is not the same as having R and RStudio installed on your laptop, so you should make it a priority to install these before the next class.
+
+## Tutorial Demonstration
+
+### 1. Reading data and assigning names
+
+Use the `read.csv()` function to load the **Crime_data.csv** file. Then assign it (`<-`) to `crime`.
+
+```{webr}
+
+```
+
+
+::: {.callout-important collapse="true"}
+## Check Answer
+
+```{r}
+#| eval: false
+crime <- read.csv("Crime_data.csv")
+```
+:::
+
+### 2. Loading packages
+
+Use the `library()` function to load the `dplyr` and `ggplot2` packages. Note: you will need to have installed these first (using the `install.packages()` function). If you have already installed them, you just need to call them using `library()`.
+
+
+```{webr}
+
+
+```
+
+
+::: {.callout-important collapse="true"}
+## Check Answer
+
+```{r}
+#| eval: false
+library(dplyr)
+library(ggplot2)
+```
+:::
+
+### 3. Inspecting the data
+
+Use the `str()` function to inspect the structure of the **crime** dataframe.
+
+
+```{webr}
+
+```
+
+
+::: {.callout-important collapse="true"}
+## Check Answer
+
+```{r}
+#| eval: false
+str(crime)
+```
+:::
+
+### 4. Descriptive statistics
+
+Obtain the `mean()`, `median()`, min() and `max()` for **Sentence**.
+
+
+```{webr}
+
+```
+
+
+::: {.callout-important collapse="true"}
+## Check Answer
+
+```{r}
+#| eval: false
+crime |> 
+  summarise(mean(Sentence),
+            median(Sentence),
+            min(Sentence),
+            max(Sentence))
+```
+:::
+
+### 5. Creating variables
+
+Create a new variable called **Sentence_years** that converts the current **Sentence** variable (currently measured in months) into years (by dividing by 12). Then save this as a new dataframe called `crime2`.
+
+```{webr}
+
+```
+
+::: {.callout-important collapse="true"}
+## Check Answer
+
+```{r}
+#| eval: false
+crime2 <- 
+  crime |> 
+  mutate(Sentence_years = Sentence/12)
+```
+:::
+
+### 6. head()
+
+Inspect the first 6 rows of the dataframe for both Sentence and Sentence_years using the `head()` function
+
+```{webr}
+
+```
+
+::: {.callout-important collapse="true"}
+## Check Answer
+
+```{r}
+#| eval: false
+crime2$Sentence |> head()
+crime2$Sentence_years |> head()
+```
+:::
+
+### 7. Correlation
+
+Use the `cor()` function to compute the correlation coefficient between **Sentence** and **EvidenceScore**.
+
+
+```{webr}
+
+```
+
+::: {.callout-important collapse="true"}
+## Check Answer
+
+```{r}
+#| eval: false
+crime2 |> summarise(cor(Sentence, EvidenceScore))
+```
+:::
+
+### 8. Selecting variables
+
+Create a new dataframe that only contains **Sentence**, **EvidenceScore**, **PriorConvictions** and **N_witnesses**. Save this as a new dataframe called `small_data`.
+
+```{webr}
+
+```
+
+::: {.callout-important collapse="true"}
+## Check Answer
+
+```{r}
+#| eval: false
+small_data <- 
+  crime2 |> 
+  select(Sentence, EvidenceScore, PriorConvictions, N_witnesses)
+```
+:::
+
+### 9. Correlation Matrix
+
+Use the cor function on the `small_data` you created in the previous question to generate a correlation matrix
+
+```{webr}
+
+```
+
+::: {.callout-important collapse="true"}
+## Check Answer
+
+```{r}
+#| eval: false
+cor(small_data)
+```
+:::
+
+### 10. Scatterplot
+
+Use the `ggplot()` function to create a scatterplot with **EvidenceScore** as the x variable and **Sentence_years** as the y variable. Note: make sure you have loaded the `ggplot2` package (see Question 2).
+
+
+```{webr}
+
+```
+
+::: {.callout-important collapse="true"}
+## Check Answer
+
+```{r}
+#| eval: false
+ggplot(crime2, aes(x = EvidenceScore, y = Sentence_years)) +
+  geom_point()
+```
+:::
+
+### 11. Boxplot
+
+Use the `ggplot()` function to create a boxplot with **WeaponUsed** as the x variable and **Sentence_years** as the y variable. Note: make sure you have loaded the `ggplot2` package (see Question 2).
+
+
+```{webr}
+
+```
+
+::: {.callout-important collapse="true"}
+## Check Answer
+
+```{r}
+#| eval: false
+ggplot(crime2, aes(x = WeaponUsed, y = Sentence_years)) +
+  geom_boxplot()
+```
+:::
+
+### 12. Histogram
+
+Use the `ggplot()` function to create a histogram with **Sentence_years** as the x variable. Note: make sure you have loaded the `ggplot2` package (see Question 2).
+
+
+```{webr}
+
+```
+
+::: {.callout-important collapse="true"}
+## Check Answer
+
+```{r}
+#| eval: false
+ggplot(crime2, aes(x = Sentence_years)) +
+  geom_histogram()
+```
+:::
+
+### 13. Contingency tables
+
+Use the `table()` function to create a contingency table with **Location** as the rows and **WeaponUsed** as the columns.
+
+
+```{webr}
+
+```
+
+::: {.callout-important collapse="true"}
+## Check Answer
+
+```{r}
+#| eval: false
+table(Location = crime2$Location, 
+      WeaponUsed = crime2$WeaponUsed)
+```
+:::
+
+### 14. Proportions for contingency tables
+
+Wrap the `prop.table()` function around your previous code to convert the counts to percentages. 
+
+
+```{webr}
+
+```
+
+::: {.callout-important collapse="true"}
+## Check Answer
+
+```{r}
+#| eval: false
+prop.table(
+  table(Location = crime2$Location, 
+      WeaponUsed = crime2$WeaponUsed)
+)
+```
+:::
+
+### 15. Conditional Probability (Rows)
+
+Add the `margin = 1` argument to your previous code to convert the proportions to conditional probabilities (conditional on the row variable).
+
+
+```{webr}
+
+```
+
+::: {.callout-important collapse="true"}
+## Check Answer
+
+```{r}
+#| eval: false
+prop.table(
+  table(Location = crime2$Location, 
+      WeaponUsed = crime2$WeaponUsed),
+  margin = 1
+)
+```
+:::
+
+### 16. Conditional Probability (Columns)
+
+Change the `margin = 1` argument to `margin = 2` to update the table to show the conditional probability, conditional on the column variable.
+
+
+```{webr}
+
+```
+
+::: {.callout-important collapse="true"}
+## Check Answer
+
+```{r}
+#| eval: false
+prop.table(
+  table(Location = crime2$Location, 
+      WeaponUsed = crime2$WeaponUsed),
+  margin = 2
+)
+```
+:::
+
+## Exercise 6 (2.5%)
+
+Now log into Moodle in complete the Exercise in the Week 7 folder. Make sure you don't close this document, as the first half of the questions will rely on what you have just completed. For those that do not have R/RStudio installed, you can use the code chunk spaces below to obtain your answers. Feel free to use as many/few as you wish.
+
+```{webr}
+
+```
+
+```{webr}
+
+```
+
+```{webr}
+
+```
+
+```{webr}
+
+```
+
+```{webr}
+
+```
+
+```{webr}
+
+```
+
+```{webr}
+
+```
+
+```{webr}
+
+```
+
+```{webr}
+
+```
+
+
+
+
+
+
